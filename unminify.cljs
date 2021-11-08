@@ -1,10 +1,10 @@
 #!/usr/bin/env nbb
 ;; Adapted from https://github.com/mifi/stacktracify
 (ns unminify
-  "unminify: restore minified stacktrace using a source map
+  "unminify: restore a minified stacktrace using a source map
 
   Usage:
-  unminifycljs :source-map '\"index.js.map\"' :stacktrace '\"stacktrace.txt\"'
+  unminify.cljs :source-map '\"index.js.map\"' :stacktrace '\"stacktrace.txt\"'
 
   Available options:
   - :source-map (required) path to source map file

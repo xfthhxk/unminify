@@ -7,7 +7,7 @@ unminifies JS stacktrace errors
 unminify: restore minified stacktrace using a source map
 
   Usage:
-  unminifycljs :source-map '"index.js.map"' :stacktrace '"stacktrace.txt"'
+  unminify.cljs :source-map '"index.js.map"' :stacktrace '"stacktrace.txt"'
 
   Available options:
   - :source-map (required) path to source map file
