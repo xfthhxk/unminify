@@ -4,7 +4,7 @@
   "unminify: restore a minified stacktrace using a source map
 
   Usage:
-  unminify.cljs :source-map '\"index.js.map\"' :stacktrace '\"stacktrace.txt\"'
+  unminify.cljs :source-map index.js.map :stacktrace stacktrace.txt
 
   Available options:
   - :source-map (required) path to source map file
@@ -76,19 +76,17 @@
 
 (defn cli
   []
-  ;; first 3 args are: node nbb filename
-  (let [args (drop 3 js/process.argv)
-        args-set (set args)]
+  (let [args-set (set *command-line-args*)]
     (when (or (empty? args-set)
               (contains? args-set "-h")
               (contains? args-set "--help"))
       (exit! -1 (usage)))
-    (when-not (even? (count args))
+    (when-not (even? (count *command-line-args*))
       (exit! -1 "Expected even number of args"))
     (let [{:keys [source-map
-                  stacktrace] :as args} (->> args
-                                             (mapv edn/read-string)
-                                             (apply hash-map))]
+                  stacktrace] :as args}
+          (into {} (for [[k v] (partition 2 *command-line-args*)]
+                     [(edn/read-string k) v]))]
       (validate-args! args)
       (p/let [stack (unminify {:source-map-file source-map
                                :stacktrace (fs/readFileSync stacktrace "utf-8")})]
