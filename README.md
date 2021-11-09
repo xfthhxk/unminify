@@ -32,7 +32,7 @@ TypeError: Cannot read properties of null (reading 'g')
 
 Unminify:
 ```shell
-./unminifycljs :source-map '"index.js.map"' :stacktrace '"stacktrace.txt"'
+./unminify.cljs :source-map index.js.map :stacktrace stacktrace.txt
 TypeError: Cannot read properties of null (reading 'g')
     at f (cljs/core.cljs:5265:37)
     at G__42694 (cljs/core.cljs:2527:20)
