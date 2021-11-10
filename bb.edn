@@ -1,0 +1,25 @@
+{:tasks
+ {:init (do
+          (def +unminify-gcp+ "xfthhxk/unminify-gcp"))
+  docker:build:gcp
+  {:doc "Builds the GCP Docker container"
+   :task
+   (let [file "Dockerfile.gcp"
+         version "alpha"
+         tag (str +unminify-gcp+  ":" version)
+         ctx-dir "."
+         cmd (format "docker build -f %s -t %s %s" file tag ctx-dir)]
+     (shell cmd))}
+
+  docker:run:gcp
+  {:doc "Runs the GCP Docker container"
+   :task
+   (let [{:strs [bucket filename
+                 version]
+          :or {version "alpha"}} (apply hash-map *command-line-args*)
+         cmd (str "docker run -it --rm -p 8080:8080 "
+                  " --env BUCKET=" bucket
+                  " --env FILENAME=" filename
+                  " " +unminify-gcp+ ":" version)]
+     (println cmd)
+     (shell cmd))}}}

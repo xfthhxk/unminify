@@ -1,0 +1,9 @@
+{
+  "name": "unminify-gcp",
+  "dependencies": {
+    "@google-cloud/error-reporting": "^2.0.4",
+    "@google-cloud/storage": "^5.15.6",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}

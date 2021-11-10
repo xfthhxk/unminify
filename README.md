@@ -1,6 +1,18 @@
 # unminify
 unminifies JS stacktrace errors
 
+* Command Line Interface (CLI)
+* Google Cloud native Docker container (alpha)
+* Other containers?
+
+## Prerequisites
+Install [nbb](https://github.com/babashka/nbb)
+```shell
+npm install nbb -g
+```
+
+## CLI Usage
+NB. must be run from the project root for now.
 ```shell
 # usage
 ./unminify.cljs
@@ -45,6 +57,36 @@ TypeError: Cannot read properties of null (reading 'g')
     at _run (reagent/ratom.cljs:415:6)
     at reagent.impl.batching/ratom-flush (reagent/impl/batching.cljs:97:5)
 ```
+
+## GCP Container
+A Docker container to ingest errors, unminify and write to Error Reporting.
+
+```shell
+docker run -it --rm -p 8080:8080 \
+--env BUCKET=some-bucket \
+--env FILENAME='path/to/source-maps/${version}.index.js.map' \
+--env ERROR_ENDPOINT=/error \
+--env CORS_ORIGINS='https://*.example.com$,https://*.example.io$' \
+--env CORS_CREDENTIALS=true \
+--env CORS_MAX_AGE=600 \
+--env CORS_ALLOWED_HEADERS='Access-Control-Allow-Origin, Access-Control-Request-Method' \
+xfthhxk/unminify:gcp-alpha
+```
+
+* Uses source maps from Cloud Storage
+* Unminifies the error
+* Writes to Error Reporting
+* Use environment variables to configure
+
+The `FILENAME` contains `${version}` which is replaced with the version from the client to find the relevant source map. This means as part of your build, the source map must be copied to the bucket at the specified path.
+
+The docker
+
+* Client:
+  - Sends request body as either JSON or EDN (Transit coming soon).
+  - Includes `stacktrace`, `version` and `service` keys in body.
+
+
 
 ## Built With
 * [nbb](https://github.com/babashka/nbb)

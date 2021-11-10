@@ -1,4 +1,4 @@
-#!/usr/bin/env nbb
+#!/usr/bin/env -S nbb --classpath workspaces/unminify-core/src
 ;; Adapted from https://github.com/mifi/stacktracify
 (ns unminify
   "unminify: restore a minified stacktrace using a source map
@@ -9,49 +9,10 @@
   Available options:
   - :source-map (required) path to source map file
   - :stacktrace (required) path to a file with the minified stacktrace"
-  (:require ["stacktrace-parser" :as stacktrace-parser]
-            ["source-map" :as source-map]
-            ["fs" :as fs]
-            [clojure.edn :as edn]
-            [promesa.core :as p]))
-
-(defn unminify
-  [{:keys [source-map-file stacktrace]}]
-  (let [stack (->> (stacktrace-parser/parse stacktrace)
-                   (mapv (fn [obj]
-                           {:method-name (.-methodName obj)
-                            :line-number (.-lineNumber obj)
-                            :column (.-column obj)})))
-        src-map (-> (fs/readFileSync source-map-file "utf-8")
-                    (js/JSON.parse))
-        header (first (.split stacktrace "\n"))]
-    (p/let [consumer (source-map/SourceMapConsumer. src-map)]
-      (reduce (fn [ans {:keys [method-name line-number column]
-                       :or {method-name ""}}]
-                (if (or (not line-number) (< line-number 1))
-                  (conj ans {:method-name method-name})
-                  (let [p (.originalPositionFor
-                           consumer #js {:line line-number :column column})
-                        name (some-> p .-name)
-                        source (some-> p .-source)
-                        line (some-> p .-line)
-                        column (some-> p .-column)]
-                    (cond-> ans
-                      (and p line) (conj {:method-name name
-                                          :source source
-                                          :line line
-                                          :column column})))))
-              [{:header header}]
-              stack))))
-
-(defn stringify
-  [[header & stack]]
-  (reduce (fn [ans {:keys [method-name source line column]}]
-            (if line
-              (str ans "    at " method-name " (" source ":" line ":" column ")\n")
-              (str ans "    at " method-name "\n")))
-          (some-> header :header (str "\n"))
-          stack))
+  (:require [clojure.edn :as edn]
+            [unminify.core :as unminify]
+            [promesa.core :as p]
+            ["fs" :as fs]))
 
 (defn exit!
   [status msg]
@@ -88,10 +49,9 @@
           (into {} (for [[k v] (partition 2 *command-line-args*)]
                      [(edn/read-string k) v]))]
       (validate-args! args)
-      (p/let [stack (unminify {:source-map-file source-map
-                               :stacktrace (fs/readFileSync stacktrace "utf-8")})]
-        (-> stack
-            stringify
-            println)))))
+      (p/let [s (unminify/unminify
+                 {:source-map source-map
+                  :stacktrace (fs/readFileSync stacktrace "utf-8")})]
+        (println s)))))
 
 (cli)
