@@ -80,7 +80,7 @@ xfthhxk/unminify:gcp-alpha
 
 The `FILENAME` contains `${version}` which is replaced with the version from the client to find the relevant source map. This means as part of your build, the source map must be copied to the bucket at the specified path.
 
-The docker
+Cloud Run is a good target for running the container.
 
 * Client:
   - Sends request body as either JSON or EDN (Transit coming soon).
@@ -90,7 +90,8 @@ The docker
 
 ## Built With
 * [nbb](https://github.com/babashka/nbb)
-
+* node
+* express
 
 ## Credits
 * [Michiel Borkent](https://github.com/borkdude) for making nbb and other amazing tools so that I can Clojure all the things. Much joy!
