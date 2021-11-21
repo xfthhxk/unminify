@@ -5,21 +5,19 @@ unminifies JS stacktrace errors
 * Google Cloud native Docker container (alpha)
 * Other containers?
 
-## Prerequisites
-Install [nbb](https://github.com/babashka/nbb)
+## Install
+Install the command line interface (cli). The executable is `unminify`.
 ```shell
-npm install nbb -g
+npm install @unminify/cli -g
 ```
 
 ## CLI Usage
-NB. must be run from the project root for now.
 ```shell
-# usage
-./unminify.cljs
+$ unminify
 unminify: restore a minified stacktrace using a source map
 
   Usage:
-  unminify.cljs :source-map index.js.map :stacktrace stacktrace.txt
+  unminify :source-map index.js.map :stacktrace stacktrace.txt
 
   Available options:
   - :source-map (required) path to source map file
@@ -44,7 +42,7 @@ TypeError: Cannot read properties of null (reading 'g')
 
 Unminify:
 ```shell
-./unminify.cljs :source-map index.js.map :stacktrace stacktrace.txt
+unminify :source-map index.js.map :stacktrace stacktrace.txt
 TypeError: Cannot read properties of null (reading 'g')
     at f (cljs/core.cljs:5265:37)
     at G__42694 (cljs/core.cljs:2527:20)
@@ -57,7 +55,7 @@ TypeError: Cannot read properties of null (reading 'g')
     at _run (reagent/ratom.cljs:415:6)
     at reagent.impl.batching/ratom-flush (reagent/impl/batching.cljs:97:5)
 ```
-
+---
 ## GCP Container
 A Docker container to ingest errors, unminify and write to Error Reporting.
 
@@ -73,9 +71,9 @@ docker run -it --rm -p 8080:8080 \
 xfthhxk/unminify:gcp-alpha
 ```
 
-* Uses source maps from Cloud Storage
+* Uses source maps from [Cloud Storage](https://cloud.google.com/storage)
 * Unminifies the error
-* Writes to Error Reporting
+* Writes to [Error Reporting](https://cloud.google.com/error-reporting)
 * Use environment variables to configure
 
 The `FILENAME` contains `${version}` which is replaced with the version from the client to find the relevant source map. This means as part of your build, the source map must be copied to the bucket at the specified path.
@@ -90,8 +88,8 @@ Cloud Run is a good target for running the container.
 
 ## Built With
 * [nbb](https://github.com/babashka/nbb)
-* node
-* express
+* [node](https://nodejs.org)
+* [express](https://expressjs.com)
 
 ## Credits
 * [Michiel Borkent](https://github.com/borkdude) for making nbb and other amazing tools so that I can Clojure all the things. Much joy!

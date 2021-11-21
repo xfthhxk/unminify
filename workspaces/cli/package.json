@@ -1,0 +1,39 @@
+{
+  "name": "@unminify/cli",
+  "version": "0.0.2",
+  "description": "Unminify stacktraces with a souce map.",
+  "keywords": [
+    "unminify",
+    "source map",
+    "stack trace",
+    "stacktrace",
+    "error",
+    "nbb",
+    "cljs"
+  ],
+  "homepage": "https://github.com/xfthhxk/unminify",
+  "bugs": {
+    "url": "https://github.com/xfthhxk/unminify/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xfthhxk/unminify.git",
+    "directory": "workspaces/cli"
+  },
+  "license": "Unlicense",
+  "author": {
+    "name": "Amar Mehta",
+    "url": "https://github.com/xfthhxk"
+  },
+  "private": false,
+  "bin": {
+    "unminify": "index.mjs"
+  },
+  "directories": {
+    "src": "src"
+  },
+  "dependencies": {
+    "@unminify/core": "0.0.1",
+    "nbb": "0.0.109"
+  }
+}

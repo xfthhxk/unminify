@@ -1,10 +1,8 @@
-#!/usr/bin/env -S nbb --classpath workspaces/unminify-core/src
-;; Adapted from https://github.com/mifi/stacktracify
-(ns unminify
+(ns unminify.cli
   "unminify: restore a minified stacktrace using a source map
 
   Usage:
-  unminify.cljs :source-map index.js.map :stacktrace stacktrace.txt
+  unminify :source-map index.js.map :stacktrace stacktrace.txt
 
   Available options:
   - :source-map (required) path to source map file
@@ -53,5 +51,12 @@
                  {:source-map source-map
                   :stacktrace (fs/readFileSync stacktrace "utf-8")})]
         (println s)))))
+
+(alter-var-root #'*command-line-args*
+                (-> js/process.argv
+                    (.slice 2)
+                    js->clj
+                    not-empty
+                    constantly))
 
 (cli)

@@ -1,8 +1,0 @@
-{
-  "name": "unminify-core",
-  "type": "module",
-  "dependencies": {
-    "source-map": "^0.7.3",
-    "stacktrace-parser": "^0.1.10"
-  }
-}
