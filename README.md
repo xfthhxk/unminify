@@ -58,6 +58,10 @@ TypeError: Cannot read properties of null (reading 'g')
 ---
 ## GCP Container
 A Docker container to ingest errors, unminify and write to Error Reporting.
+The GCP Docker container can be built with `bb docker:build:gcp`.
+You can then tag the image via `docker image tag docker.io/xfthhxk/unminify-gcp:alpha gcr.io/${gcp-project}/unminify-gcp:alpha` and then push
+`docker push gcr.io${gcp-project}/unminify-gcp:alpha`
+
 
 ```shell
 docker run -it --rm -p 8080:8080 \

@@ -31,9 +31,5 @@
   },
   "directories": {
     "src": "src"
-  },
-  "dependencies": {
-    "@unminify/core": "0.0.1",
-    "nbb": "0.0.109"
   }
 }

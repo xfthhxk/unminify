@@ -3,7 +3,7 @@
   (:require [clojure.string :as str]
             [clojure.edn :as edn]
             [goog.object]
-            ;; [cognitect.transit :as transit]
+            [cognitect.transit :as transit]
             ["@google-cloud/storage" :as storage]
             ["@google-cloud/error-reporting" :as er]
             ["express$default" :as express]
@@ -43,7 +43,7 @@
   [filename version]
   (let [filename (if (str/starts-with? filename "/")
                    (subs filename 1)
-                   (filename))]
+                   filename)]
     (str/replace filename "${version}" version)))
 
 
@@ -103,6 +103,7 @@
      :cors-allowed-headers (goog.object/get e "CORS_ALLOWED_HEADERS")
      :cors-credentials? (= "true" (goog.object/get e "CORS_CREDENTIALS" "false"))
      :cors-max-age (js/parseInt (goog.object/get e "CORS_MAX_AGE" "600"))
+     :node-env (goog.object/get e "NODE_ENV")
      :debug? (= "true" (goog.object/get e "DEBUG" "false"))}))
 
 
@@ -118,9 +119,9 @@
                      (next)))))
 
 
-;; (defn- parse-transit
-;;   [s]
-;;   (transit/read (transit/reader :json) s))
+(defn- parse-transit
+  [s]
+  (transit/read (transit/reader :json) s))
 
 (defn strip-byte-order-mark
   [s]
@@ -139,7 +140,7 @@
         parser (case ct
                  "application/json" parse-json
                  "application/edn" edn/read-string
-                 ;; "application/transit+json" parse-transit
+                 "application/transit+json" parse-transit
                  identity)
         parsed (parser body)]
     (goog.object/set req "body" parsed)
@@ -210,10 +211,15 @@
 (defn main
   []
   (.on js/process "unhandledRejection" (fn [reason _promise] (println "ERROR: unhandledRejection " reason)))
-  (alter-var-root #'*state* (constantly (env-variables)))
-  (println "state: " *state*)
-  (assert (string? (:bucket *state*)) "BUCKET env not found")
-  (assert (string? (:filename *state*)) "FILENAME env not found")
-  (start-server!))
+  (let [env-vars (env-variables)]
+    (alter-var-root #'*state* (constantly env-vars))
+    (println "state: " *state*)
+    (assert (string? (:bucket *state*)) "BUCKET env not found")
+    (assert (string? (:filename *state*)) "FILENAME env not found")
+    (when-not (get env-vars :node-env)
+      (println "NODE_ENV is not set, setting to 'production' for safety.")
+      (goog.object/set (.-env process) "NODE_ENV" "production")
+      (assoc *state* :node-env "production"))
+    (start-server!)))
 
 (main)

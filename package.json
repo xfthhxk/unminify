@@ -2,5 +2,8 @@
   "name": "unminify",
   "workspaces": [
     "./workspaces/*"
-  ]
+  ],
+  "scripts": {
+    "cli": "npx run cli"
+  }
 }

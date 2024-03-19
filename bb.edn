@@ -1,6 +1,7 @@
 {:tasks
  {:init (do
           (def +unminify-gcp+ "xfthhxk/unminify-gcp"))
+
   docker:build:gcp
   {:doc "Builds the GCP Docker container"
    :task
