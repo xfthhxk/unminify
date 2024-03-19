@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:21-alpine
 RUN npm install nbb -g
 RUN mkdir -p /unminify
 COPY . /unminify/
@@ -10,4 +10,4 @@ WORKDIR /unminify/workspaces/unminify-gcp
 RUN npm install
 WORKDIR /unminify
 EXPOSE 8080
-ENTRYPOINT ["nbb", "--classpath", ".:./workspaces/unminify-core/src:./workspaces/unminify-gcp/src", "./workspaces/unminify-gcp/src/unminify/gcp.cljs"]
+ENTRYPOINT ["nbb", "--classpath", ".:./workspaces/core/src:./workspaces/gcp/src", "./workspaces/gcp/src/unminify/gcp.cljs"]

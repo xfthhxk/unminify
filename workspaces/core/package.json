@@ -1,6 +1,6 @@
 {
   "name": "@unminify/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Unminify stacktraces with a souce map.",
   "keywords": [
     "unminify",
@@ -27,7 +27,8 @@
   },
   "private": false,
   "dependencies": {
-    "source-map": "^0.7.3",
-    "stacktrace-parser": "^0.1.10"
+    "source-map": "^0.7.4",
+    "stacktrace-parser": "^0.1.10",
+    "nbb": "^1.2.187"
   }
 }
